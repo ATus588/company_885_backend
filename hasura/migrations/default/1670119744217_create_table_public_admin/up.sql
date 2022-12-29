@@ -1,0 +1,1 @@
+CREATE TABLE "public"."admin" ("id" serial NOT NULL, "name" text NOT NULL, "email" text NOT NULL, "password" text NOT NULL, "fcm_token" text, "created_at" timestamptz NOT NULL DEFAULT now(), "created_by" integer, PRIMARY KEY ("id") , UNIQUE ("email"));

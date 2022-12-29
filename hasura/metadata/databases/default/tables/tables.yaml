@@ -1,0 +1,3 @@
+- "!include public_admin.yaml"
+- "!include public_log.yaml"
+- "!include public_user.yaml"

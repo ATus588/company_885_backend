@@ -1,0 +1,9 @@
+version: 3
+#endpoint: https://company-885.hasura.app
+endpoint: http://localhost:8100/
+#admin_secret: gx1dqNWxXAD129ZSJyOkpIPo4l7yS5RMPT3FEJ10sCy3Sd1YwlZ9M5ZWdZtdpw0x
+admin_secret: "company885"
+metadata_directory: metadata
+actions:
+  kind: synchronous
+  handler_webhook_baseurl: http://localhost:3000

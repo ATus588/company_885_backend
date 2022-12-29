@@ -1,0 +1,1 @@
+CREATE TABLE "public"."log" ("id" serial NOT NULL, "operation" text NOT NULL, "created_at" timestamptz NOT NULL, "target_table" text NOT NULL, "target_id" integer NOT NULL, "old" jsonb, "new" jsonb, "user" text, PRIMARY KEY ("id") );

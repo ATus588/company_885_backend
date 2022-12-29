@@ -1,0 +1,46 @@
+version: "3.7"
+services:
+  # postgres database
+  postgres:
+    container_name: company-885-db-${ENV}
+    hostname: postgres-app
+    ports:
+      - ${POSTGRES_PORT}:5432
+    image: postgres:11-alpine
+    restart: always
+    volumes:
+      - ./postgres/sql:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres123456
+
+  # hasura
+  hasura:
+    container_name: company-885-hasura-${ENV}
+    hostname: hasura-app
+    image: hasura/graphql-engine:v2.9.0
+    ports:
+      - ${HASURA_PORT}:8080
+    depends_on:
+      - postgres
+    restart: always
+    environment:
+      ## postgres database to store Hasura metadata
+      ##HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgres123456@postgres:5432/postgres
+      HASURA_GRAPHQL_DATABASE_URL: ${HASURA_GRAPHQL_DATABASE_URL}
+      HASURA_GRAPHQL_V1_BOOLEAN_NULL_COLLAPSE: ${HASURA_GRAPHQL_V1_BOOLEAN_NULL_COLLAPSE}
+      ## this env var can be used to add the above postgres database to Hasura as a data source. this can be removed/updated based on your needs
+      PG_DATABASE_URL2: ${PG_DATABASE_URL2}
+      ## enable the console served by server
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+      ## enable debugging mode. It is recommended to disable this in production
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      ## uncomment next line to set an admin secret
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: anonymous
+      #API_KEY: ${API_KEY}  
+      
+volumes:
+  db_data:
