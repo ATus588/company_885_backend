@@ -1,0 +1,120 @@
+type Mutation {
+  admin_first_check(
+    token: String!
+  ): NoReturnValueOuput
+}
+
+type Mutation {
+  admin_first_send_mail(
+    email: String!
+    name: String!
+    admin_id: Int
+  ): CreatedAtOutput
+}
+
+type Mutation {
+  admin_first_set_pass(
+    password: String!
+    pass_confirm: String!
+    admin_id: Int!
+  ): NoReturnValueOutput
+}
+
+type Mutation {
+  forget_pass_check(
+    token: String!
+    role: String!
+  ): NoReturnValueOutput
+}
+
+type Mutation {
+  forget_pass_mail(
+    email: String!
+    role: String!
+  ): NoReturnValueOutput
+}
+
+type Mutation {
+  forget_pass_reset(
+    password: String!
+    pass_confirm: String!
+    id: Int!
+    role: String!
+  ): CreatedAtOutput
+}
+
+type Mutation {
+  login_admin(
+    email: String!
+    password: String!
+  ): LoginAdminOutput
+}
+
+type Mutation {
+  login_user(
+    email: String!
+    password: String!
+  ): LoginUserOutput
+}
+
+type Mutation {
+  register_user(
+    email: String!
+    password: String!
+    pass_confirm: String!
+    birthday: String!
+    phone: String!
+    firstname: String!
+    lastname: String!
+  ): CreatedAtOutput
+}
+
+type Mutation {
+  validate_email_signUp(
+    email: String!
+  ): NoReturnValueOuput
+}
+
+type NoReturnValueOuput {
+  status_code: Int!
+  error_code: String
+  error_message: String
+}
+
+type LoginUserOutput {
+  role: String
+  email: String
+  user_id: Int
+  token: String
+  status_code: Int
+  name: String
+  expire_date: String
+  error_code: String
+  error_message: String
+}
+
+type LoginAdminOutput {
+  role: String
+  email: String
+  admin_id: Int
+  token: String
+  status_code: Int
+  name: String
+  expire_date: String
+  error_code: String
+  error_message: String
+}
+
+type CreatedAtOutput {
+  status_code: Int!
+  error_code: String
+  error_message: String
+  created_at: String
+}
+
+type NoReturnValueOutput {
+  status_code: Int!
+  error_code: String
+  error_message: String
+}
+

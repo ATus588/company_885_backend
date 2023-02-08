@@ -1,0 +1,21 @@
+table:
+  name: projects
+  schema: public
+object_relationships:
+  - name: admin
+    using:
+      foreign_key_constraint_on: created_by
+  - name: adminByLeader
+    using:
+      foreign_key_constraint_on: leader
+  - name: project
+    using:
+      foreign_key_constraint_on: parent_project
+array_relationships:
+  - name: projects
+    using:
+      foreign_key_constraint_on:
+        column: parent_project
+        table:
+          name: projects
+          schema: public

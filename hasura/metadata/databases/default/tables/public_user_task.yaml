@@ -1,0 +1,18 @@
+table:
+  name: user_task
+  schema: public
+object_relationships:
+  - name: task
+    using:
+      foreign_key_constraint_on: task_id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
+array_relationships:
+  - name: task_comments
+    using:
+      foreign_key_constraint_on:
+        column: user_task_id
+        table:
+          name: task_comment
+          schema: public

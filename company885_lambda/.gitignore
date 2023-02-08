@@ -7,3 +7,5 @@ jspm_packages
 
 #config file 
 config.json
+config.local.json
+config.dev.json

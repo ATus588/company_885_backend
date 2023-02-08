@@ -2,10 +2,45 @@ table:
   name: admin
   schema: public
 array_relationships:
-  - name: users
+  - name: news
     using:
       foreign_key_constraint_on:
         column: created_by
         table:
-          name: user
+          name: news
+          schema: public
+  - name: news_comments
+    using:
+      foreign_key_constraint_on:
+        column: created_by_admin
+        table:
+          name: news_comment
+          schema: public
+  - name: projects
+    using:
+      foreign_key_constraint_on:
+        column: created_by
+        table:
+          name: projects
+          schema: public
+  - name: projectsByLeader
+    using:
+      foreign_key_constraint_on:
+        column: leader
+        table:
+          name: projects
+          schema: public
+  - name: task_comments
+    using:
+      foreign_key_constraint_on:
+        column: created_by_admin
+        table:
+          name: task_comment
+          schema: public
+  - name: tasks
+    using:
+      foreign_key_constraint_on:
+        column: created_by
+        table:
+          name: tasks
           schema: public

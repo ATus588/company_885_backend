@@ -1,0 +1,1 @@
+CREATE TABLE "public"."room" ("id" serial NOT NULL, "name" text NOT NULL, "detail" Text, "room_type" integer, "created_at" timestamptz NOT NULL DEFAULT now(), "created_by" integer NOT NULL, "avatar_url" text, PRIMARY KEY ("id") , UNIQUE ("name"));

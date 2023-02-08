@@ -1,6 +1,81 @@
-actions: []
+actions:
+  - name: admin_first_check
+    definition:
+      kind: synchronous
+      handler: '{{ADMIN_FIRST_CHECK}}'
+      headers:
+        - name: x-api-key
+          value_from_env: API_KEY
+  - name: admin_first_send_mail
+    definition:
+      kind: synchronous
+      handler: '{{ADMIN_FIRST_SEND_MAIL}}'
+      headers:
+        - name: x-api-key
+          value_from_env: API_KEY
+  - name: admin_first_set_pass
+    definition:
+      kind: synchronous
+      handler: '{{ADMIN_FIRST_SET_PASSWORD}}'
+      headers:
+        - name: x-api-key
+          value_from_env: API_KEY
+  - name: forget_pass_check
+    definition:
+      kind: synchronous
+      handler: '{{FORGET_PASS_CHECK}}'
+      headers:
+        - name: x-api-key
+          value_from_env: API_KEY
+  - name: forget_pass_mail
+    definition:
+      kind: synchronous
+      handler: '{{FORGET_PASS_MAIL}}'
+      headers:
+        - name: x-api-key
+          value_from_env: API_KEY
+  - name: forget_pass_reset
+    definition:
+      kind: synchronous
+      handler: '{{FORGET_PASS_RESET}}'
+      headers:
+        - name: x-api-key
+          value_from_env: API_KEY
+  - name: login_admin
+    definition:
+      kind: synchronous
+      handler: '{{LOGIN_ADMIN}}'
+      headers:
+        - name: x-api-key
+          value_from_env: API_KEY
+  - name: login_user
+    definition:
+      kind: synchronous
+      handler: '{{LOGIN_USER}}'
+      headers:
+        - name: x-api-key
+          value_from_env: API_KEY
+  - name: register_user
+    definition:
+      kind: synchronous
+      handler: '{{REGISTER_USER}}'
+      headers:
+        - name: x-api-key
+          value_from_env: API_KEY
+  - name: validate_email_signUp
+    definition:
+      kind: synchronous
+      handler: '{{VALIDATE_EMAIL_SIGNUP}}'
+      headers:
+        - name: x-api-key
+          value_from_env: API_KEY
 custom_types:
   enums: []
   input_objects: []
-  objects: []
+  objects:
+    - name: NoReturnValueOuput
+    - name: LoginUserOutput
+    - name: LoginAdminOutput
+    - name: CreatedAtOutput
+    - name: NoReturnValueOutput
   scalars: []

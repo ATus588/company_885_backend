@@ -26,6 +26,9 @@ coverage
 
 #important config 
 company885-lambda/config.json
+company885-lambda/config.local.json
+company885-lambda/config.dev.json
+
 
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt

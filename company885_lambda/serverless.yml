@@ -3,30 +3,21 @@ app: company885-lambda
 service: company885-lambda
 
 frameworkVersion: '2'
-custom:
-  apiKeys:
-    - company-885-app-api-key-dev
-  prune:
-    automatic: true
-    number: 1
-  splitStacks:
-    perFunction: false
-    perType: false
-    perGroupFunction: true
-    nestedStackCount: 5
-  vpc:
-    # Functions for the CI stage are deployed in the default VPC.
-    # Functions for the production stage are deployed in the "beat-production" VPC.
-    # production:
-    #   securityGroupIds:
-    #     - "sg-0d526bd0fb1666f5a" # beat-production-lambda
-    #   subnetIds:
-    #     - "subnet-0df94e658e18954d6" # beat-production-1a-with-nat
-    #     - "subnet-02dd48df2883ea199" # beat-production-1c-with-nat
+plugins:
+  - serverless-offline
 provider:
   name: aws
   runtime: nodejs14.x
-
+  region: us-east-1
+  # iamRoleStatements:
+  #   - Effect: Allow
+  #     Action:
+  #       - "cloudwatch:GetMetricStatistics"
+  #       - "cloudwatch:DescribeAlarms"
+  #       - "cloudwatch:PutMetricData"
+  #     Resourse: '*'
+  apiKeys:
+    - company-885-app-api-key-dev
   environment:
     JWT_ENCRYPTION_KEY: ${file(config.json):JWT_ENCRYPTION_KEY}
     S3_ACCESS_KEY: ${file(config.json):S3_ACCESS_KEY}
@@ -34,13 +25,10 @@ provider:
     HASURA_ADMIN_SECRET: ${file(config.json):HASURA_ADMIN_SECRET}
     HASURA_ENDPOINT: ${file(config.json):HASURA_ENDPOINT}
     S3_REGION: "ap-northeast-1"
-  region: us-east-1
-  apiKeys:
-    - company-885-app-api-key-dev
+    SIB_API_KEY: ${file(config.json):SIB_API_KEY}
+
 
 functions:
-  # hello:
-  #   handler: handler.hello
   use_if_need_job:
     handler: functions/use_if_need_job.handler
     # iamRoleStatements: # [Optional] these statements will be applied to this function only (in addition to statements that are applied to all functions)
@@ -54,4 +42,74 @@ functions:
       - http:
           path: use_if_need_job
           method: post
-          # private: true
+          private: true
+  admin_first_send_mail:
+    handler: functions/signUp/admin_first_send_mail.handler
+    events:
+      - http:
+          path: admin_first_send_mail
+          method: post
+          private: true
+  validate_email_signUp:
+    handler: functions/signUp/validate_email_signUp.handler
+    events:
+      - http:
+          path: validate_email_signUp
+          method: post
+          private: true
+  login_admin:
+    handler: functions/auth/login_admin.handler
+    events:
+      - http:
+          path: login_admin
+          method: post
+          private: true
+  login_user:
+    handler: functions/auth/login_user.handler
+    events:
+      - http:
+          path: login_user
+          method: post
+          private: true
+  register_user:
+    handler: functions/signUp/register_user.handler
+    events:
+      - http:
+          path: register_user
+          method: post
+          private: true
+  admin_first_set_password:
+    handler: functions/signUp/admin_first_set_password.handler
+    events:
+      - http:
+          path: admin_first_set_password
+          method: post
+          private: true
+  admin_first_check:
+    handler: functions/signUp/admin_first_check.handler
+    events:
+      - http:
+          path: admin_first_check
+          method: post
+          private: true
+  forget_pass_check:
+    handler: functions/forget_pass/forget_pass_check.handler
+    events:
+      - http:
+          path: forget_pass_check
+          method: post
+          private: true
+  forget_pass_mail:
+    handler: functions/forget_pass/forget_pass_mail.handler
+    events:
+      - http:
+          path: forget_pass_mail
+          method: post
+          private: true
+  forget_pass_reset:
+    handler: functions/forget_pass/forget_pass_reset.handler
+    events:
+      - http:
+          path: forget_pass_reset
+          method: post
+          private: true
