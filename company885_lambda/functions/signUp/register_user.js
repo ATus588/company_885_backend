@@ -25,8 +25,8 @@ mutation MyMutation3($email: String!) {
 }
 `;
 const HASURA_OPERATION_INSERT_USER = `
-mutation MyMutation2($birthday: date!, $email: String!, $firstname: String!, $password: String!, $phone: String!, $lastname: String!) {
-  insert_user_one(object: {birthday: $birthday, email: $email, firstname: $firstname, password: $password, phone: $phone, status: 0, lastname: $lastname}) {
+mutation MyMutation2($email: String!, $firstname: String!, $password: String!, $phone: String!, $lastname: String!) {
+  insert_user_one(object: {email: $email, firstname: $firstname, password: $password, phone: $phone, status: 0, lastname: $lastname}) {
     created_at
   }
 }
@@ -38,7 +38,7 @@ module.exports.handler = async (
     callback
 ) => {
     const postBody = JSON.parse(event.body);
-    const { birthday, email, firstname, lastname, password, phone, pass_confirm } = postBody.input;
+    const { email, firstname, lastname, password, phone, pass_confirm } = postBody.input;
     // validate email
     const { data: dataValidate, errors: errValidate } = await execute(
         { email: email },
@@ -95,7 +95,7 @@ module.exports.handler = async (
     const hashedPassword = await bcrypt.hash(password, 10);
     // insert to db
     const { data: dataInsert, errors: errInsert } = await execute(
-        { password: hashedPassword, email: email, birthday: birthday, firstname: firstname, lastname: lastname, phone: phone },
+        { password: hashedPassword, email: email, firstname: firstname, lastname: lastname, phone: phone },
         { "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET },
         HASURA_OPERATION_INSERT_USER
     );

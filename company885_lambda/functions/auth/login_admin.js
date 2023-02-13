@@ -10,6 +10,7 @@ query MyQuery($email: String!) {
     password
     name
     id
+    avatar_url
   }
 }
 `;
@@ -41,8 +42,6 @@ module.exports.handler = async (event, context, callback) => {
 
     // generate jwt token
     const tokenContents = {
-        sub: email.toString(),
-        email: email,
         iat: Date.now() / 1000,
         "https://hasura.io/jwt/claims": {
             "x-hasura-allowed-roles": ["manager"],
@@ -52,6 +51,11 @@ module.exports.handler = async (event, context, callback) => {
             "x-hasura-user-id": data.admin[0].id.toString(),
         },
         exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60,
+        role: "admin",
+        email: email,
+        id: data.admin[0].id,
+        name: data.admin[0].name,
+        avatar_url: data.admin[0].avatar_url || null
     };
 
     const ExpireDate = moment()
@@ -66,11 +70,14 @@ module.exports.handler = async (event, context, callback) => {
         body: JSON.stringify({
             role: "admin",
             email: email,
-            admin_id: data.admin[0].id,
+            id: data.admin[0].id,
             token: token,
             status_code: 200,
             name: data.admin[0].name,
             expire_date: ExpireDate,
+            error_code: null,
+            error_message: null,
+            avatar_url: data.admin[0].avatar_url || null
         }),
     };
     return res;

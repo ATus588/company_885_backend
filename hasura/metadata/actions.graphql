@@ -1,6 +1,8 @@
 type Mutation {
   admin_first_check(
     token: String!
+    password: String!
+    pass_confirm: String!
   ): NoReturnValueOuput
 }
 
@@ -62,7 +64,6 @@ type Mutation {
     email: String!
     password: String!
     pass_confirm: String!
-    birthday: String!
     phone: String!
     firstname: String!
     lastname: String!
@@ -84,25 +85,27 @@ type NoReturnValueOuput {
 type LoginUserOutput {
   role: String
   email: String
-  user_id: Int
+  id: Int
   token: String
   status_code: Int
   name: String
   expire_date: String
   error_code: String
   error_message: String
+  avatar_url: String
 }
 
 type LoginAdminOutput {
   role: String
   email: String
-  admin_id: Int
+  id: Int
   token: String
   status_code: Int
   name: String
   expire_date: String
   error_code: String
   error_message: String
+  avatar_url: String
 }
 
 type CreatedAtOutput {

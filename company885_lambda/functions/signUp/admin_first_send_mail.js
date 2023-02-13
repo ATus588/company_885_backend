@@ -35,6 +35,11 @@ module.exports.handler = async (event, context, callback) => {
     const postBody = JSON.parse(event.body);
     const { name, email, admin_id } = postBody.input;
 
+    if (email === '' || name === '') {
+        callback(null, { statusCode: 202, body: JSON.stringify({ status_code: 202, error_code: "ERR_NULL_VALUE", error_message: "Email and name must not NULL", }), });
+        return;
+    }
+
     //validate
     const { data: dataValidate, errors: errValidate } = await execute(
         { email: email },
@@ -86,10 +91,11 @@ module.exports.handler = async (event, context, callback) => {
 
     //html content
     const htmlContent = `
-    <h2>Welcome to our Company<h2>
-    <h3>Please join the link below to set up your password<h3>
+    <h2>Our dearest welcome!<h2>
+    <h3>One of our admin has invited you to be an admin of our Company<h3>
+    <h3>Please enter the token below to proceed to set password pages<h3>
     <div>-----------------------------------------------</div>
-    <a href='${token}' target='_blank'>Set up your pass word here</a>
+    <p>${token}</p>
     <div>-----------------------------------------------</div>
     <h3>Thank you for using our services</h3>
     `

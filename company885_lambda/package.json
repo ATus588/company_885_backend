@@ -9,6 +9,7 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.21.1",
     "node-fetch": "^2.6.1",
+    "parse-multipart": "^1.0.4",
     "sib-api-v3-sdk": "^8.5.0"
   },
   "devDependencies": {

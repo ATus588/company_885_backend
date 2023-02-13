@@ -10,6 +10,7 @@ query MyQuery($email: String!) {
     firstname
     lastname
     id
+    status
     password
     avatar_url
   }
@@ -22,6 +23,11 @@ module.exports.handler = async (event, context, callback) => {
     const email = postBody.input.email.toLowerCase();
     const password = postBody.input.password;
 
+    //check not null
+    if (email === '' || password === '') {
+        callback(null, { statusCode: 202, body: JSON.stringify({ status_code: 202, error_code: "ERR_NULL_FORM", error_message: "Email and password must not be NULL", }), });
+        return;
+    }
     // Get user info
     const { data, errors } = await execute({ email: email }, { "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET_APP }, HASURA_OPERATION_GET_USER_BY_EMAIL);
     console.log("data", data);
@@ -33,7 +39,11 @@ module.exports.handler = async (event, context, callback) => {
         callback(null, { statusCode: 202, body: JSON.stringify({ status_code: 202, error_code: "ERR_USER_NOT_FOUND", error_message: "User not found", }), });
         return;
     }
-
+    // check status
+    if (data.user[0].status === 0) {
+        callback(null, { statusCode: 202, body: JSON.stringify({ status_code: 305, error_code: "ERR_USER_NOT_AUTHENTICATED", error_message: "You are not approved by any admin", }), });
+        return;
+    }
 
     // check password
     const check = await bcrypt.compare(password, data.user[0].password);
@@ -42,10 +52,9 @@ module.exports.handler = async (event, context, callback) => {
         return;
     }
 
+
     // generate jwt token
     const tokenContents = {
-        sub: email.toString(),
-        email: email,
         iat: Date.now() / 1000,
         "https://hasura.io/jwt/claims": {
             "x-hasura-allowed-roles": ["user"],
@@ -55,6 +64,11 @@ module.exports.handler = async (event, context, callback) => {
             "x-hasura-user-id": data.user[0].id.toString(),
         },
         exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60,
+        role: "user",
+        email: email,
+        id: data.user[0].id,
+        name: data.user[0].firstname + data.user[0].lastname,
+        avatar_url: data.user[0].avatar_url || null
     };
 
     const ExpireDate = moment()
@@ -69,11 +83,14 @@ module.exports.handler = async (event, context, callback) => {
         body: JSON.stringify({
             role: "user",
             email: email,
-            user_id: data.user[0].id,
+            id: data.user[0].id,
             token: token,
             status_code: 200,
             name: data.user[0].firstname + data.user[0].lastname,
             expire_date: ExpireDate,
+            error_code: null,
+            error_message: null,
+            avatar_url: data.user[0].avatar_url || null
         }),
     };
     return res;

@@ -5,6 +5,9 @@ object_relationships:
   - name: admin
     using:
       foreign_key_constraint_on: created_by_admin
+  - name: news
+    using:
+      foreign_key_constraint_on: news_id
   - name: user
     using:
       foreign_key_constraint_on: created_by_user

@@ -38,7 +38,6 @@ module.exports.handler = async (event, context, callback) => {
     const { email, role } = postBody.input;
 
     let dataGet, name, id;
-    let link = 'https://something/';
 
     if (role === "admin") {
         const { data: dataA, errors: errA } = await execute({ email: email }, { "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET_APP },
@@ -55,7 +54,6 @@ module.exports.handler = async (event, context, callback) => {
         dataGet = dataA.update_admin.returning[0];
         name = dataGet.name;
         id = dataGet.id;
-        link = link + 'admin/';
     }
     if (role === "user") {
         const { data: dataU, errors: errU } = await execute({ email: email }, { "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET_APP },
@@ -72,7 +70,6 @@ module.exports.handler = async (event, context, callback) => {
         dataGet = dataU.update_user.returning[0];
         name = dataGet.firstname + " " + dataGet.lastname;
         id = dataGet.id;
-        link = link + 'user/';
     }
 
     //validate
@@ -87,16 +84,13 @@ module.exports.handler = async (event, context, callback) => {
 
     const token = jwt.sign(tokenContents, process.env.JWT_ENCRYPTION_KEY);
 
-    link = link + token;
-
     //html content
     const htmlContent = `
     <h2>Hi, ${name}!<h2>
     <h3>We have recieve your request to change password</h3>
-    <h3>Please join the link below reset your password</h3>
+    <h3>Here is your reset password token, please enter to proceed</h3>
     <div>-----------------------------------------------</div>
-    <a href='${link}' target='_blank'>Reset up your pass word here</a>
-    <p>${link}</p>
+    <p>${token}</>
     <div>-----------------------------------------------</div>
     <h3>Thank you for using our services</h3>
     <h3>Plese be careful next time!</h3>
