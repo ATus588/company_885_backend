@@ -1,0 +1,1 @@
+INSERT INTO "public"."news"("id", "title", "content", "created_at", "created_by", "is_soft_deleted", "admin_only_flag", "company_only_flag") VALUES (44, E'Hard work is the dream work', E'Work harder to make our Company better', E'2023-02-14T07:45:54.24631+00:00', 47, false, true, true);

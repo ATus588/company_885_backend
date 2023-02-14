@@ -1,0 +1,1 @@
+INSERT INTO "public"."news_comment"("id", "content", "created_by_admin", "created_by_user", "created_at", "news_id", "point") VALUES (7, E'I will, this is so good', null, 12, E'2023-02-14T07:54:14.356027+00:00', 42, 10);

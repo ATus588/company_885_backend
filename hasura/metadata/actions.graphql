@@ -25,7 +25,8 @@ type Mutation {
 type Mutation {
   forget_pass_check(
     token: String!
-    role: String!
+    password: String!
+    pass_confirm: String!
   ): NoReturnValueOutput
 }
 

@@ -1,0 +1,1 @@
+INSERT INTO "public"."news"("id", "title", "content", "created_at", "created_by", "is_soft_deleted", "admin_only_flag", "company_only_flag") VALUES (40, E'Happy Valentine', E'Today is the valentine day, who do you think about first?', E'2023-02-14T07:42:37.95113+00:00', 47, false, false, false);

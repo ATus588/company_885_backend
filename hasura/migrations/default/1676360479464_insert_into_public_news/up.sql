@@ -1,0 +1,1 @@
+INSERT INTO "public"."news"("id", "title", "content", "created_at", "created_by", "is_soft_deleted", "admin_only_flag", "company_only_flag") VALUES (39, E'Welcome visitors', E'This is our news to welcome new visitors! If you want to view more, please register', E'2023-02-14T07:41:19.444025+00:00', 47, false, false, false);

@@ -1,5 +1,6 @@
 const fetch = require("node-fetch");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
 const HASURA_GET_ADMIN_BY_EMAIL = `query MyQuery($email: String!) {
@@ -17,17 +18,56 @@ query MyQuery($email: String!) {
   }
 }
 `
+const HASURA_RESET_PASS_ADMIN = `mutation MyMutation($id: Int!, $password: String!) {
+  update_admin_by_pk(pk_columns: {id: $id}, _set: {password: $password, status: 1}) {
+    status
+    created_at
+  }
+}
+`
+const HASURA_RESET_PASS_USER = `mutation MyMutation($id: Int!, $password: String!) {
+  update_user_by_pk(pk_columns: {id: $id}, _set: {password: $password, status: 1}) {
+    status
+    created_at
+  }
+}
+
+`
 
 
 module.exports.handler = async (event, context, callback) => {
     const postBody = JSON.parse(event.body);
-    const { token, role } = postBody.input;
+    const { token, password, pass_confirm } = postBody.input;
 
-    console.log(token);
-    console.log(jwt.decode(token));
+    //check input
+    if (password == '') {
+        callback(null, {
+            statusCode: 202,
+            body: JSON.stringify({
+                status_code: 202,
+                error_code: "ERR_NULL_PASSWORD",
+                error_message: "Please insert a valid password",
+            }),
+        });
+        return;
+    }
+
+    if (password !== pass_confirm) {
+        callback(null, {
+            statusCode: 202,
+            body: JSON.stringify({
+                status_code: 202,
+                error_code: "ERR_WRONG_PASS_CONFIRM",
+                error_message: "Password and confirm password has to be the same",
+            }),
+        });
+        return;
+    }
+
     // decode token
-    const { email, exp } = jwt.decode(token, process.env.JWT_ENCRYPTION_KEY);
+    const { email, exp, role, id } = jwt.decode(token, process.env.JWT_ENCRYPTION_KEY);
 
+    console.log(role, email)
     // check status
 
     if (role === "admin") {
@@ -56,7 +96,7 @@ module.exports.handler = async (event, context, callback) => {
             callback(null, { statusCode: 202, body: JSON.stringify({ status_code: 404, error_code: "ERR_USER_NOT_FOUND", error_message: "Can't find user with this email", }), });
             return;
         }
-        if (dataAdmin.user[0].status !== 2) {
+        if (dataUser.user[0].status !== 2) {
             callback(null, { statusCode: 202, body: JSON.stringify({ status_code: 403, error_code: "ERR_PASSWORD_SET", error_message: "This account password has already been reset", }), });
             return;
         }
@@ -67,6 +107,23 @@ module.exports.handler = async (event, context, callback) => {
     if ((Math.floor(Date.now() / 1000)) > exp) {
         callback(null, { statusCode: 202, body: JSON.stringify({ status_code: 401, error_code: "ERR_TOKEN_EXPIRED", error_message: "This token has been expired", }), });
         return;
+    }
+    //hashed
+    const hashedPassword = await bcrypt.hash(password, 10);
+    if (role === "admin") {
+        const { data: dataAdmin, errors: errorsAdmin } = await execute({ id: id, password: hashedPassword }, { "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET }, HASURA_RESET_PASS_ADMIN);
+        if (errorsAdmin) {
+            callback(null, { statusCode: 202, body: JSON.stringify({ status_code: 202, error_code: "ERR_QUERY_FAILED", error_message: "Query admin failed!", }), });
+            return;
+        }
+    }
+
+    if (role === "user") {
+        const { data: dataUser, errors: errorsUser } = await execute({ id: id, password: hashedPassword }, { "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET }, HASURA_RESET_PASS_USER);
+        if (errorsUser) {
+            callback(null, { statusCode: 202, body: JSON.stringify({ status_code: 202, error_code: "ERR_QUERY_FAILED", error_message: "Query user failed!", }), });
+            return;
+        }
     }
 
     const res = {

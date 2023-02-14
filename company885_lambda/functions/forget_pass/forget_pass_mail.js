@@ -36,6 +36,12 @@ module.exports.handler = async (event, context, callback) => {
     // handle input
     const postBody = JSON.parse(event.body);
     const { email, role } = postBody.input;
+    console.log(email, role);
+
+    if (email === '') {
+        callback(null, { statusCode: 202, body: JSON.stringify({ status_code: 202, error_code: "ERR_NULL_VALUE", error_message: "Email must not be null", }), });
+        return;
+    }
 
     let dataGet, name, id;
 
@@ -80,6 +86,7 @@ module.exports.handler = async (event, context, callback) => {
         email: email,
         iat: Date.now() / 1000,
         exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60,
+        role: role
     };
 
     const token = jwt.sign(tokenContents, process.env.JWT_ENCRYPTION_KEY);
