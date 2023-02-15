@@ -62,6 +62,13 @@ actions:
       headers:
         - name: x-api-key
           value_from_env: API_KEY
+  - name: validate_comment
+    definition:
+      kind: synchronous
+      handler: '{{VALIDATE_COMMENT}}'
+      headers:
+        - name: x-api-key
+          value_from_env: API_KEY
   - name: validate_email_signUp
     definition:
       kind: synchronous

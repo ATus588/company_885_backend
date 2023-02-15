@@ -113,3 +113,10 @@ functions:
           path: forget_pass_reset
           method: post
           private: true
+  validate_comment:
+    handler: functions/utils/validate_comment.handler
+    events:
+      - http:
+          path: validate_comment
+          method: post
+          private: true
